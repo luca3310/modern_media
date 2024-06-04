@@ -6,12 +6,20 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import Navbar from "@/components/Navbar";
-import { SignedIn } from "@clerk/nextjs";
-import { useUser } from "@clerk/nextjs";
-import PostForm from "@/components/PostForm";
+import { SignInButton, SignedOut, SignedIn, useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function Home() {
+export default function Profile() {
   const { user } = useUser();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      user ? router.push(`/profile/${user.id}`) : null;
+    }
+  }, [user]);
 
   return (
     <main>
@@ -23,10 +31,15 @@ export default function Home() {
           <Navbar />
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={70}>
-          <SignedIn>
-            <PostForm user={user} />
-          </SignedIn>
+        <ResizablePanel defaultSize={50}>
+          <div className="w-full h-full flex justify-center items-center">
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <div>loading</div>
+            </SignedIn>
+          </div>
         </ResizablePanel>
 
         <ResizableHandle withHandle />
